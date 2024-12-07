@@ -3,66 +3,86 @@ import logging
 import sys
 from PyPDF2 import PdfReader
 
-ARTICLETEXT=""
+ARTICLETEXT = ""
 baseurl = "https://g9557wysl2.execute-api.us-east-2.amazonaws.com/prod"
+
 def process():
     try:
-        print("Enter Pdf filename")
+        print("Enter PDF filename: ")
         localfile = input()
         reader = PdfReader(localfile)
-        text =""
+        text = ""
         for page in reader.pages:
             text+=page.extract_text()
         
         text = " ".join(text.splitlines())
 
-        print("finished uploading the article")
+        print("Finished uploading the article")
         return text
 
     except Exception as e:
-        print("ran into this error while processing: ", e)
-
-
-
-
-
+        print("We ran into this error while processing: ", e)
 
 def sentimentAnalysis(text):
     try:
-        if len(ARTICLETEXT) ==0 :
-            print("no article has been updated yet")
+        if len(text) == 0 :
+            print("no article has been uploaded yet")
             return 
         url = baseurl + "/sentiment"
-        dataPayload = ARTICLETEXT
+        dataPayload = text
         res = requests.post(url, json=dataPayload)
 
         if res.status_code== 200:
             return res.json()['Sentiment']
         else:
-            print("we ran into an issue")
-        return "there was an error with the analysis"
+            print("We ran into an issue")
+        return "There was an error with the analysis"
     except Exception as e:
-        print("ran into this error in sentiment analysis: ", e)
+        print("We ran into this error in sentiment analysis: ", e)
     
-
-
-
 def summarize(text):
-    pass
+    try:
+        url = baseurl + "/summarize"
+        dataPayload = {
+            "body": text
+        }
+        res = requests.post(url, json=dataPayload)
+        if res.status_code == 200:
+            print('status code was 200 for summarization')
+            return res.json()['body']
+        else:
+            print("We ran into an issue in the summarization")
+        return "There was an error with the summarization"
+    except Exception as e:
+        print("We ran into this error during summarization: ", e)
 
 
 def translate(text):
-    pass
+    try:
+        url = baseurl + "/translate"
+        language = input("Enter the language you want to translate to: ")
+        url = url + "/" + language
+        dataPayload = text
+        res = requests.post(url, json=dataPayload)
+        print("this is the json object: "   , res.json())
+        if res.status_code == 200:
+            return res.json()['TranslatedText']
+        else:
+            print("We ran into an in the translation")
+        return "There was an error with the translation"
+    except Exception as e:
+        print("We ran into this error during translation: ", e)
+
 
 def prompt():
     try:
         print()
         print(">> Enter a command:")
-        print("   0 => end")
-        print("   1 => upload article")
-        print("   2 => sentiment analysis")
-        print("   3 => summarize article")
-        print("   4 => translate article")
+        print("   0 => Exit")
+        print("   1 => Upload article")
+        print("   2 => Sentiment analysis")
+        print("   3 => Summarize article")
+        print("   4 => Translate article")
 
         cmd = input()
 
@@ -91,21 +111,21 @@ try:
             analysis = sentimentAnalysis(ARTICLETEXT)
             if not analysis:
                 analysis = ""
-            print("here is our analysis\n***********************************************\n" + analysis + "\n***********************************************")
+            print("Here is our analysis\n***********************************************\n" + analysis + "\n***********************************************")
 
         elif cmd == 3:
-            print("cmd3")
+            summary = summarize(ARTICLETEXT)
+            if not summary:
+                summary = ""
+            print("Here is our summary\n***********************************************\n" + summary + "\n***********************************************")
         elif cmd == 4:
-            print("cmd4")
+            translation = translate(ARTICLETEXT)
+            if not translation:
+                translation = ""
+            print("Here is our translation\n***********************************************\n" + translation + "\n***********************************************")
         else:
             print("** Unknown command, try again...")
         cmd = prompt()
-
-
-
-
-    
-
 
 except Exception as e:
     logging.error("ERROR MAIN() FAILED")
