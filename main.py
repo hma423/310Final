@@ -3,20 +3,48 @@ import logging
 import sys
 from PyPDF2 import PdfReader
 
-
+ARTICLETEXT=""
+baseurl = "https://g9557wysl2.execute-api.us-east-2.amazonaws.com/prod"
 def process():
-    reader = PdfReader(r"C:\Users\mhenr\Documents\Github\310Final\newsArticle.pdf")
-    text =""
-    for page in reader.pages:
-        text+=page.extract_text()
-    
-    text = " ".join(text.splitlines())
-    return text
+    try:
+        print("Enter Pdf filename")
+        localfile = input()
+        reader = PdfReader(localfile)
+        text =""
+        for page in reader.pages:
+            text+=page.extract_text()
+        
+        text = " ".join(text.splitlines())
+
+        print("finished uploading the article")
+        return text
+
+    except Exception as e:
+        print("ran into this error while processing: ", e)
+
+
+
 
 
 
 def sentimentAnalysis(text):
-    pass
+    try:
+        if len(ARTICLETEXT) ==0 :
+            print("no article has been updated yet")
+            return 
+        url = baseurl + "/sentiment"
+        dataPayload = ARTICLETEXT
+        res = requests.post(url, json=dataPayload)
+
+        if res.status_code== 200:
+            return res.json()['Sentiment']
+        else:
+            print("we ran into an issue")
+        return "there was an error with the analysis"
+    except Exception as e:
+        print("ran into this error in sentiment analysis: ", e)
+    
+
 
 
 def summarize(text):
@@ -54,23 +82,24 @@ def prompt():
 try:
     print("Welcome to our 310 Final Project\n")
 
-    article = process()
-    print(article)
-    # cmd = prompt()
+    cmd = prompt()
 
-    # while cmd != 0:
-    # #
-    #     if cmd == 1:
-    #         print("cmd 1!")
-    #     elif cmd == 2:
-    #         print("cmd 2")
-    #     elif cmd == 3:
-    #         print("cmd3")
-    #     elif cmd == 4:
-    #         print("cmd4")
-    #     else:
-    #         print("** Unknown command, try again...")
-    #     cmd = prompt()
+    while cmd != 0:
+        if cmd == 1:
+            ARTICLETEXT = process()
+        elif cmd == 2:
+            analysis = sentimentAnalysis(ARTICLETEXT)
+            if not analysis:
+                analysis = ""
+            print("here is our analysis\n***********************************************\n" + analysis + "\n***********************************************")
+
+        elif cmd == 3:
+            print("cmd3")
+        elif cmd == 4:
+            print("cmd4")
+        else:
+            print("** Unknown command, try again...")
+        cmd = prompt()
 
 
 
