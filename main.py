@@ -42,6 +42,10 @@ def sentimentAnalysis(text):
     
 def summarize(text):
     try:
+
+        if len(text) == 0 :
+            print("no article has been uploaded yet")
+            return 
         url = baseurl + "/summarize"
         dataPayload = {
             "body": text
@@ -59,6 +63,9 @@ def summarize(text):
 
 def translate(text):
     try:
+        if len(text) == 0 :
+            print("no article has been uploaded yet")
+            return 
         url = baseurl + "/translate"
         language = input("Enter the language you want to translate to: ")
         url = url + "/" + language
