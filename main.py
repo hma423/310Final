@@ -52,7 +52,6 @@ def summarize(text):
         }
         res = requests.post(url, json=dataPayload)
         if res.status_code == 200:
-            print('status code was 200 for summarization')
             return res.json()['body']
         else:
             print("We ran into an issue in the summarization")
@@ -71,7 +70,6 @@ def translate(text):
         url = url + "/" + language
         dataPayload = text
         res = requests.post(url, json=dataPayload)
-        print("this is the json object: "   , res.json())
         if res.status_code == 200:
             return res.json()['TranslatedText']
         else:
