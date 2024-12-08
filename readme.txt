@@ -15,3 +15,5 @@ deploy.ipynb --> our code for deploying on AWS SageMaker
 summarization.py --> lambda function code for our summarization lambda function
 translate.py --> code for our translate lambda function
 analysis.py --> code for our sentiment analysis lambda function
+
+included the pdf article files as well
