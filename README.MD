@@ -1,5 +1,7 @@
 Quick Overview
 
+[![YouTube](http://i.ytimg.com/vi/uAXbCZTykvY/hqdefault.jpg)](https://www.youtube.com/watch?v=uAXbCZTykvY)
+
 requiremnts.txt has all the installs that are needed, so run:
 
 pip install -r requirements.txt or pip3 install -r requirements.txt
