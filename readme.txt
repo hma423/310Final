@@ -1,3 +1,6 @@
+Quick Overview
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/uAXbCZTykvY/0.jpg)](https://www.youtube.com/watch?v=uAXbCZTykvY)
+
 requiremnts.txt has all the installs that are needed, so run:
 
 pip install -r requirements.txt or pip3 install -r requirements.txt
